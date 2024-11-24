@@ -28,6 +28,7 @@ const mockExercises: DayExercises[] = [
     exercises: [
       { id: 3, type: 'Flexibility', details: 'Yoga for 45 minutes' },
       { id: 4, type: 'Strength', details: 'Squats 4x12' },
+      { id: 5, type: 'cold shower', details: '20 min in Cold water -20' },
     ]
   },
 ]
