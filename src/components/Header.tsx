@@ -3,6 +3,7 @@ import React from 'react'
 import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
+
 export const Route = createRootRoute({
   component: Header,
 })
@@ -18,7 +19,7 @@ function Header() {
         <nav className="flex items-center space-x-4">
           <ul className="flex space-x-4">
             <li><Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Home</Link></li>
-            <li><Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Exercise</Link></li>
+            <li><Link href="/exercise" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Exercise</Link></li>
             <li><Link href="/home" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Login</Link></li>
           </ul>
         </nav>
