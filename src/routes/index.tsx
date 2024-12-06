@@ -27,8 +27,8 @@ const mockExercises: DayExercises[] = [
   {
     date: '2023-06-02',
     exercises: [
-      { id: 3, title: 'Yoga', type: 'Flexibility', category: 'Core', weight: 0, sets: 1, reps: 1, time: 0,date: ''},
-      { id: 4, title: 'Squats', type: 'Strength', category: 'Legs', weight: 80, sets: 4, reps: 12, time: 0,date: '' },
+      { id: 3, title: 'Yoga', type: 'Flexibility', category: 'Core', weight: 0, sets: 1, reps: 1, time: 0,date: null },
+      { id: 4, title: 'Squats', type: 'Strength', category: 'Legs', weight: 80, sets: 4, reps: 12, time: 0,date: null },
     ]
   },
 ]
