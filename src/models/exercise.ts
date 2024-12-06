@@ -8,6 +8,6 @@ export interface Exercise {
   time: number
   sets: number
   reps: number
-  date: string
+  date: Date
 }
 

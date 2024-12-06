@@ -1,5 +1,13 @@
+/*
+ * this file for add new exercise
+ * will add the exercise detail (title[name of exercise], category, weight, time, reps, and sets and date[default value is today])
+ * will add this exercise for database with api request for =>url/api/add_exercises
+ */
+
 import * as React from 'react'
 import { useState } from 'react'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -7,7 +15,9 @@ export const Route = createFileRoute('/exercise')({
   component: AboutComponent,
 })
 
-const categories = ['Core', 'Back', 'Chest', 'Shoulders', 'Legs']
+
+// the category exist 
+const categories = ['Core', 'Back', 'Chest', 'Shoulders', 'Legs','Cardio']
 
 function AboutComponent() {
   const [title, setTitle] = useState('')
@@ -16,30 +26,32 @@ function AboutComponent() {
   const [time, setTime] = useState('')
   const [reps, setReps] = useState('')
   const [sets, setSets] = useState('')
+  const [date, setDate] = useState(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await fetch('http://localhost:3001/api/exercises', {
+      // call api on this endpoint with post method
+      const response = await fetch('http://localhost:3001/api/add_exercises', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title, category, weight, time, reps, sets }),
+        body: JSON.stringify({ title, category, weight, time, reps, sets, date }),
       })
+      // this for what will happen after response is work success
       if (response.ok) {
+        // show the result
         const newExercise = await response.json()
         console.log('Exercise added:', newExercise)
-        // Reset form or show success message
+        // return all the code for nothing
         setTitle('')
         setCategory('')
         setWeight('')
         setTime('')
         setReps('')
         setSets('')
+        setDate(null)
       } else {
+        // in cas => "response not work" //! Show error message
         console.error('Failed to add exercise')
-        // Show error message
       }
     } catch (error) {
       console.error('Error:', error)
@@ -48,12 +60,11 @@ function AboutComponent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
-      <main className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Add Exercise</h1>
         <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
           <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Title</label>
+            <label className="block text-black-300 font-bold mb-2">Title</label>
             <input
               type="text"
               id="title"
@@ -64,7 +75,7 @@ function AboutComponent() {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="category" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Category</label>
+            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Category</label>
             <select
               id="category"
               value={category}
@@ -80,7 +91,7 @@ function AboutComponent() {
           </div>
           <div className="mb-4 flex space-x-4">
             <div className="flex-1">
-              <label htmlFor="weight" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Weight (kg)</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Weight (kg)</label>
               <input
                 type="number"
                 id="weight"
@@ -90,7 +101,7 @@ function AboutComponent() {
               />
             </div>
             <div className="flex-1">
-              <label htmlFor="time" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Time (minutes)</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Time (minutes)</label>
               <input
                 type="number"
                 id="time"
@@ -102,7 +113,7 @@ function AboutComponent() {
           </div>
           <div className="mb-4 flex space-x-4">
             <div className="flex-1">
-              <label htmlFor="sets" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Sets</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Sets</label>
               <input
                 type="number"
                 id="sets"
@@ -112,7 +123,7 @@ function AboutComponent() {
               />
             </div>
             <div className="flex-1">
-              <label htmlFor="reps" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Reps</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Reps</label>
               <input
                 type="number"
                 id="reps"
@@ -122,11 +133,20 @@ function AboutComponent() {
               />
             </div>
           </div>
+          
+          <div className='flex'>
+            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2 mt-2">Date:</label>
+            <input
+                type="date"
+                id='date'
+                onChange={() => setDate(date)} // This will give us the date in the format YYYY-MM-DD
+                className="mx-5 px-4 py-2  dark:bg-gray-700 border rounded-md"
+              />
+          </div>
           <button type="submit" className="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:bg-tertiary transition-colors">
             Add Exercise
           </button>
         </form>
-      </main>
-    </div>
+      </div>
   )
 }
