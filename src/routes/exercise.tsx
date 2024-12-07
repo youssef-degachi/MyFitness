@@ -32,9 +32,9 @@ function AboutComponent() {
     e.preventDefault()
     try {
       // call api on this endpoint with post method
-      const response = await fetch('http://localhost:3001/api/add_exercises', {
+      const response = await fetch('http://localhost:5000/api/add_exercises', {
         method: 'POST',
-        body: JSON.stringify({ title, category, weight, time, reps, sets, date }),
+        body: JSON.stringify({  date, title, category, weight, time, reps, sets }),
       })
       // this for what will happen after response is work success
       if (response.ok) {
