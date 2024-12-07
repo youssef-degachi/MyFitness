@@ -1,49 +1,81 @@
-import * as React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
 import DailyExercises from '../components/DailyExercises';
 import { Exercise } from '../models/exercise';
+import axios from 'axios';
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
-})
+});
 
 interface DayExercises {
-  date: string
-  exercises: Exercise[]
+  date: string;
+  exercises: Exercise[];
 }
 
-
-// This is mock data. In a real app, you'd fetch this from your backend
-const mockExercises: DayExercises[] = [
-  {
-    date: '2023-06-01',
-    exercises: [
-      {
-        id: 1, title: 'Running', type: 'Cardio', category: 'Cardio', weight: 0, sets: 1, reps: 1,time: 0,date: ''
-      },
-      { id: 2, title: 'Bench Press', type: 'Strength', category: 'Chest', weight: 60, sets: 3, reps: 10, time: 0,date: ''},
-    ]
-  },
-  {
-    date: '2023-06-02',
-    exercises: [
-      { id: 3, title: 'Yoga', type: 'Flexibility', category: 'Core', weight: 0, sets: 1, reps: 1, time: 0,date: null },
-      { id: 4, title: 'Squats', type: 'Strength', category: 'Legs', weight: 80, sets: 4, reps: 12, time: 0,date: null },
-    ]
-  },
-]
-
-
 function HomeComponent() {
+  const [exercises, setExercises] = useState<DayExercises[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await axios.get<DayExercises[]>('http://localhost:5000/api/get-exercise');
+        setExercises(response.data);
+      } catch (err) {
+        setError('Failed to fetch exercises. Please try again later.');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchExercises();
+  }, []);
+
+  // Helper function to format the date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Sort exercises by date in descending order (latest first)
+  const sortedExercises = [...exercises].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateB.getTime() - dateA.getTime(); // Compare the dates in descending order
+  });
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">My Exercises</h1>
-        {mockExercises.map((day) => (
-          <DailyExercises key={day.date} date={day.date} exercises={day.exercises} />
+
+        {isLoading && <p className="text-gray-600 dark:text-gray-300">Loading exercises...</p>}
+        {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
+
+        {!isLoading && !error && exercises.length === 0 && (
+          <p className="text-gray-600 dark:text-gray-300">No exercises available.</p>
+        )}
+
+        {sortedExercises.map((day) => (
+          <DailyExercises 
+            key={day.date} 
+            date={formatDate(day.date)} 
+            exercises={day.exercises} 
+          />
         ))}
       </main>
     </div>
-
-  )
+  );
 }
+
+export default HomeComponent;
