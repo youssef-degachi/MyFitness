@@ -11,16 +11,23 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SignupImport } from './routes/signup'
+import { Route as RegisterImport } from './routes/register'
+import { Route as LoginImport } from './routes/login'
 import { Route as HomeImport } from './routes/home'
 import { Route as ExerciseImport } from './routes/exercise'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const SignupRoute = SignupImport.update({
-  id: '/signup',
-  path: '/signup',
+const RegisterRoute = RegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,11 +74,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeImport
       parentRoute: typeof rootRoute
     }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
   }
@@ -83,14 +97,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/exercise': typeof ExerciseRoute
   '/home': typeof HomeRoute
-  '/signup': typeof SignupRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/exercise': typeof ExerciseRoute
   '/home': typeof HomeRoute
-  '/signup': typeof SignupRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
 }
 
 export interface FileRoutesById {
@@ -98,15 +114,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/exercise': typeof ExerciseRoute
   '/home': typeof HomeRoute
-  '/signup': typeof SignupRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/exercise' | '/home' | '/signup'
+  fullPaths: '/' | '/exercise' | '/home' | '/login' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/exercise' | '/home' | '/signup'
-  id: '__root__' | '/' | '/exercise' | '/home' | '/signup'
+  to: '/' | '/exercise' | '/home' | '/login' | '/register'
+  id: '__root__' | '/' | '/exercise' | '/home' | '/login' | '/register'
   fileRoutesById: FileRoutesById
 }
 
@@ -114,14 +131,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExerciseRoute: typeof ExerciseRoute
   HomeRoute: typeof HomeRoute
-  SignupRoute: typeof SignupRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExerciseRoute: ExerciseRoute,
   HomeRoute: HomeRoute,
-  SignupRoute: SignupRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 
 export const routeTree = rootRoute
@@ -137,7 +156,8 @@ export const routeTree = rootRoute
         "/",
         "/exercise",
         "/home",
-        "/signup"
+        "/login",
+        "/register"
       ]
     },
     "/": {
@@ -149,8 +169,11 @@ export const routeTree = rootRoute
     "/home": {
       "filePath": "home.tsx"
     },
-    "/signup": {
-      "filePath": "signup.tsx"
+    "/login": {
+      "filePath": "login.tsx"
+    },
+    "/register": {
+      "filePath": "register.tsx"
     }
   }
 }

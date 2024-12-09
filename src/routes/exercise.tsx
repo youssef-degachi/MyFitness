@@ -5,10 +5,10 @@ const categories = ['Core', 'Back', 'Chest', 'Shoulders', 'Legs', 'Cardio'];
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/exercise')({
-  component: AboutComponent,
+  component: ExerciseComponent,
 });
 
-function AboutComponent() {
+function ExerciseComponent() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [weight, setWeight] = useState('');
@@ -19,15 +19,15 @@ function AboutComponent() {
 
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    setTitle('');
-    setCategory('');
-    setWeight('');
-    setTime('');
-    setReps('');
-    setSets('');
-    setDate(null);
+  
     try {
+      const userId = localStorage.getItem('userId'); 
+      if (!userId) {
+        alert('Login First');
+        return;
+      }
       const response = await axios.post('http://localhost:5000/api/add-exercise', {
+        userId,
         date,
         title,
         category,
@@ -138,4 +138,4 @@ function AboutComponent() {
   );
 }
 
-export default AboutComponent;
+export default ExerciseComponent;

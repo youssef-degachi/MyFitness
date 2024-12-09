@@ -23,13 +23,19 @@ function HomeComponent() {
     const fetchExercises = async () => {
       setIsLoading(true);
       setError(null);
-
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User ID not found in local storage.');
+      }
+      
       try {
-        const response = await axios.get<DayExercises[]>('http://localhost:5000/api/get-exercise');
+        const response = await axios.get('http://localhost:5000/api/get-exercise', {
+          params: { userId: userId },
+        });
         setExercises(response.data);
       } catch (err) {
+        console.log("err: "+ err)
         setError('Failed to fetch exercises. Please try again later.');
-        console.error(err);
       } finally {
         setIsLoading(false);
       }
