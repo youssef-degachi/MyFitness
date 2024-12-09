@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors';
 
 import exerciseRouter from './routers/exercisesRouter.js' 
+import userRouter from './routers/userRouter.js' 
 
 dotenv.config();
 const app = express()
@@ -26,5 +27,6 @@ app.get("/",(res,req)=>{
 })
 
 app.use("/api",exerciseRouter)
+app.use("/api",userRouter)
 
 app.listen(PORT, ()=> console.log(`it's work on http://localhost:${PORT}`))
