@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import axios from 'axios'
 
 export const Route = createFileRoute('/login')({
@@ -10,7 +10,10 @@ export const Route = createFileRoute('/login')({
 function LoginComponent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
+  const chgeUrl = useNavigate();
+  const goToIndex = () => {
+    chgeUrl("/")
+  }
   
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
@@ -29,7 +32,7 @@ function LoginComponent() {
       if (response.status === 200) {
         const { userId, message } = response.data
         localStorage.setItem('userId', userId)
-        localStorage.setItem('fullName', response.data.user.fullname)
+        localStorage.setItem('fullName', response.data.fullname)
         alert(message)
       } else {
         alert(response.data.message)
@@ -89,11 +92,10 @@ function LoginComponent() {
 
         <button
           type="submit"
+          onClick={goToIndex}
           className="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:bg-tertiary transition-colors"
         >
-          <Link to="/">
           Login
-          </Link>
         </button>
       </form>
     </div>

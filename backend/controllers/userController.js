@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
     return res.status(400).json({ message: "Invalid email or password." });
   }
 
-  res.status(200).json({ message: "Login successful", userId: user._id, user: { fullname: user.fullname } });
+  res.status(200).json({ message: "Login successful", userId: user._id,  fullname: user.fullname  });
 };
 
 

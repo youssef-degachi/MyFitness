@@ -39,15 +39,11 @@ const deleteWorkout = async (req, res) => {
   const { date } = req.params; // Get the date from the request parameters
 
   try {
-    // Find and delete the workout for the given date
     const workout = await Workout.findOneAndDelete({ date });
-
-    // If no workout found, return a 404 error
     if (!workout) {
       return res.status(404).json({ message: 'Workout not found for this date' });
     }
 
-    // Respond with a success message
     res.status(200).json({ message: `Workout for ${date} has been deleted` });
   } catch (error) {
     console.error(error);

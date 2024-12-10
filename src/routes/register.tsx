@@ -12,6 +12,12 @@ function RegisterComponent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const chgeUrl = useNavigate(); 
+  const navigator = useNavigate();
+  const goToLogin = () => {
+    chgeUrl("/login")
+
+  }
+
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     if (!fullname || !email || !password) {
       alert('All fields are required');
@@ -24,17 +30,8 @@ function RegisterComponent() {
         email,
         password,
       });
-
-      if (response.status === 201) {
-        alert(response.data.message);
-        // Redirect to a different page or perform other actions
-      } else {
-        alert(response.data.message);
-      }
-      if (response.status === 200){
-        alert("user Created")
-      }
-  
+      alert("user Created")
+      chgeUrl("/login")
     } catch (error) {
       console.error('Error:', error);
       
@@ -79,10 +76,8 @@ function RegisterComponent() {
             required
           />
         </div>
-        <button  type="submit" className="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:bg-tertiary transition-colors">
-        <Link to="/login" />
+        <button onClick={goToLogin} type="submit" className="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:bg-tertiary transition-colors">
             Register
-        <Link/>;
         </button>
       </form>
     </div>
