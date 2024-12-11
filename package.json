@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "dev": "vite --port=3001",
+    "dev": "concurrently \"vite --port=3001\" \"node backend/server.js\"",
     "build": "vite build",
     "serve": "vite preview",
-    "start": "vite"
+    "start": "vite",
+    "back": "nodemon backend/server.js"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.81.9",
@@ -32,6 +33,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.4",
+    "nodemon": "^3.1.7",
     "postcss": "^8.4.49",
     "react": "^18.3.1",
     "react-datepicker": "^7.5.0",
