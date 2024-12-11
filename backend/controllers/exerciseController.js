@@ -1,65 +1,16 @@
 import Workout from '../models/exercise.js'
+//* i use word workout 
 
-// const addExercises = async (req, res) => {
-//   const { date ,title, category, weight, sets, reps, time } = req.body;
-//   let workout = await Workout.findOne({ date });
-
-//   // If no workout exists for the date, create a new one
-//   if (!workout) {
-//     workout = new Workout({
-//       date,
-//       exercises: [] // Initialize with an empty exercises array
-//     });
-//   }
-
-//   // Create a new exercise
-//   const newExercise = {
-//     title,
-//     category,
-//     weight,
-//     sets,
-//     reps,
-//     time
-//   };
-
-//   // Add the new exercise to the exercises array
-//   workout.exercises.push(newExercise);
-
-//   // Save the workout with the new exercise
-//   await workout.save();
-//   res.status(201).json(newExercise);
-// }
-
-// const getExercises = async (req, res) => {
-//   const exercises = await Workout.find({});
-//   res.json(exercises);
-// }
-
-const deleteWorkout = async (req, res) => {
-  const { date } = req.params; // Get the date from the request parameters
-
-  try {
-    const workout = await Workout.findOneAndDelete({ date });
-    if (!workout) {
-      return res.status(404).json({ message: 'Workout not found for this date' });
-    }
-
-    res.status(200).json({ message: `Workout for ${date} has been deleted` });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-
-
-
-
+// create new exercise
+// @param userId,date, title, category, weight, sets, reps, time
+// @result create new exercise for "userId" and in date "date"
+// Post request
 const addExercises = async (req, res) => {
+  // get detail from body
   const {userId ,date, title, category, weight, sets, reps, time } = req.body;
-
+  // find user and date 
   let workout = await Workout.findOne({ date, user: userId });
-
+  //if exercise not exist create it  
   if (!workout) {
     workout = new Workout({
       user: userId,
@@ -67,7 +18,7 @@ const addExercises = async (req, res) => {
       exercises: [],
     });
   }
-
+  // add exercise for DB
   const newExercise = { title, category, weight, sets, reps, time };
   workout.exercises.push(newExercise);
   await workout.save();
@@ -75,27 +26,42 @@ const addExercises = async (req, res) => {
   res.status(201).json(newExercise);
 };
 
-
+// get all exercise for specific user
+// @param userId
+// @result show all exercise for  specific user
+// get request
 const getExercises = async (req, res) => {
+  // get all exercise and show them 
   const userId = req.query.userId || req.body.userId;
+  const workout = await Workout.find({ user: userId });
+  res.json(workout);
+};
 
-  const exercises = await Workout.find({ user: userId });
-  res.json(exercises);
+// delete specific exercise for specific user
+// @param Date ,userId
+// @result delete user
+// delete request
+//! this function not perfect yet [can remove other user exercise]
+// todo: need to add specific user 
+const deleteWorkout = async (req, res) => {
+  // get date
+  const { date } = req.params; 
+  // delete exercise with the same date
+  try {
+    const workout = await Workout.findOneAndDelete({ date });
+    if (!workout) {
+      return res.status(404).json({ message: 'Exercise not found in this date' });
+    }
+    // show if exercise is deleted or not 
+    res.status(200).json({ message: `Exercise in ${date} has been deleted` });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 
 
-const getExercisesById = async (req, res) => {
-  const userId = req.query.userId || req.body.userId;
-
-  const exercises = await Workout.find({ user: userId });
-  res.json(exercises);
-};
 
 
 
-
-
-
-
-export { addExercises, getExercises, deleteWorkout,getExercisesById}
+export { addExercises, getExercises, deleteWorkout}

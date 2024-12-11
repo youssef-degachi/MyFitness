@@ -4,6 +4,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import DailyExercises from '../components/DailyExercises';
 import { Exercise } from '../models/exercise';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -15,6 +16,7 @@ interface DayExercises {
 }
 
 function HomeComponent() {
+  /* This is the normal why with axios
   const [exercises, setExercises] = useState<DayExercises[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +46,34 @@ function HomeComponent() {
     fetchExercises();
   }, []);
 
-  // Helper function to format the date
+  */
+
+
+  // see if userId exist localStorage => to show the data or say login first
+  const userId = localStorage.getItem('userId');
+  // get exercise from database
+  const { 
+    data: exercises = [], isLoading, error 
+  } = useQuery<DayExercises[]>({
+    queryKey: ['exercises'],
+    queryFn: async () => {
+      // check if user is exist (logged in) or stop
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User ID not found in local storage.');
+      }
+      // call all exercises
+      const response = await axios.get('http://localhost:5000/api/get-exercise', {
+        params: { userId: userId },
+      });
+      return response.data;
+    },
+
+  });
+
+  // get true format of exercise
+  // in databse is saved ad data with timezoon
+  // result
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -53,25 +82,32 @@ function HomeComponent() {
     return `${year}-${month}-${day}`;
   };
 
-  // Sort exercises by date in descending order (latest first)
+  // sort the list of exercise
   const sortedExercises = [...exercises].sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    return dateB.getTime() - dateA.getTime(); // Compare the dates in descending order
+    const d1 = new Date(a.date);
+    const d2 = new Date(b.date);
+    return d2.getTime() - d1.getTime(); // Compare the dates in descending order
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
+    <div className="bg-gray-800 container mx-auto px-4 py-8 mt-12 ">
+
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">My Exercises</h1>
-
-        {isLoading && <p className="text-gray-600 dark:text-gray-300">Loading exercises...</p>}
-        {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
-
-        {!isLoading && !error && exercises.length === 0 && (
-          <p className="text-gray-600 dark:text-gray-300">No exercises available.</p>
+        <h1 className="text-3xl font-bold mb-6 text-white">My Exercises</h1>
+        {/* if user not exist in local storage show that he need to sign in first */}
+        {userId === null ?(
+          <p className="text-red-600">Sign in first</p>
+        ):(
+          <>
+          {/* show loading exercises */}
+          {isLoading && <p className="text-white ">Loading exercises...</p>}
+          {error && <p className="text-red-600 ">Sign in first</p>}
+          {!isLoading && !error && exercises.length === 0 && (
+            <p className="text-white">No exercises available.</p>
+          )}
+          </>
         )}
-
+        {/* show all exercise after sort them */}
         {sortedExercises.map((day) => (
           <DailyExercises 
             key={day.date} 

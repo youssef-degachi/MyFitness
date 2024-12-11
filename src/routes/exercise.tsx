@@ -1,138 +1,208 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createFileRoute } from '@tanstack/react-router';
+import { useForm } from '@tanstack/react-form';
 import axios from "axios"
+import { QueryClient, useMutation } from '@tanstack/react-query';
+
 const categories = ['Core', 'Back', 'Chest', 'Shoulders', 'Legs', 'Cardio'];
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/exercise')({
   component: ExerciseComponent,
 });
 
 function ExerciseComponent() {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [weight, setWeight] = useState('');
-  const [time, setTime] = useState('');
-  const [reps, setReps] = useState('');
-  const [sets, setSets] = useState('');
-  const [date, setDate] = useState<string | null>(null);
-
-
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
-  
-    try {
-      const userId = localStorage.getItem('userId'); 
+  // useMutatoin to do my requst with react-query
+  // call the function to add exercise to database using axios 
+  const addExerciseMutation = useMutation({
+    mutationFn: async (exerciseData) => {
+      // check if user is exist (logged in)
+      const userId = localStorage.getItem('userId');
       if (!userId) {
-        alert('Login First');
-        return;
+        throw new Error('Login First');
       }
+      // call api of add exercise
       const response = await axios.post('http://localhost:5000/api/add-exercise', {
+        ...exerciseData,
         userId,
-        date,
-        title,
-        category,
-        weight,
-        sets,
-        reps,
-        time,
       });
+      return response.data;
+    },//if is successful return alert show that is added
+    onSuccess: () => {    
       alert('Exercise added successfully!');
-      console.log('Exercise added:', response.data);
-      
-      
-    } catch (error) {
+      form.reset();
+    },// if is failed show alert 
+    onError: (error) => {
       console.error('Error:', error);
-      alert('Failed to add exercise');
+      alert(error.message || 'Failed to add exercise');
     }
-  };
+  });
+  // read the exercise data using 'tanstack form'
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      category: '',
+      weight: '',
+      time: '',
+      reps: '',
+      sets: '',
+      date: null as string | null,
+    },// in submit the data get from useForm will send to the api
+    onSubmit: async ({ value }) => {
+      addExerciseMutation.mutate(value);
+    },
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Add Exercise</h1>
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+      <h1 className="text-3xl font-bold mb-6 text-white">Add Exercise</h1>
+      {/* create form */}
+      <form 
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }} 
+        className="bg-gray-900 shadow-2xl rounded-xl p-6"
+      >
         <div className="mb-4">
-          <label className="block text-black-300 font-bold mb-2">Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
-            required
+          <label className="block text-white font-bold mb-2">Title</label>
+          {/*  input the name of exercise with useForm*/}
+          <form.Field
+            name="title"
+            validators={{
+              onBlur: ({ value }) => {
+                if (!value) return "you let title empty";},
+            }}
+            children={(field) => (
+              <input
+                type="text"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="w-full px-3 py-2 border rounded-xl focus:outline-none bg-gray-700 text-white"
+                required
+              />
+            )}
           />
         </div>
+
         <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Category</label>
-          <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
-            required
-          >
-            <option value="">Select a category</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+          {/*  input the category of exercise with useForm*/}
+          <label className="block text-white font-bold mb-2">Category</label>
+          <form.Field
+            name="category"
+            validators={{
+              onBlur: ({ value }) => {
+                if (!value) return "Category is required";
+              },
+            }}
+            children={(field) => (
+              <select
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="w-full px-3 py-2 border rounded-xl focus:outline-none bg-gray-700 text-white"
+                required
+              >
+                <option value="">Select category</option>
+                {categories.map((catg) => (
+                  <option key={catg} value={catg}>{catg}</option>
+                ))}
+              </select>
+            )}
+          />
         </div>
+          {/* split the wight , time , sets and reps in 2 in same line  */}
         <div className="mb-4 flex space-x-4">
           <div className="flex-1">
-            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Weight (kg)</label>
-            <input
-              type="number"
-              id="weight"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
+        {/*  input the Weight of exercise with useForm*/}
+            <label className="block text-white font-bold mb-2">Weight (kg)</label>
+            <form.Field
+              name="weight"
+              children={(field) => (
+                <input
+                  type="number"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-xl focus:outline-none bg-gray-700 text-white"
+                />
+              )}
             />
           </div>
           <div className="flex-1">
-            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Time (minutes)</label>
-            <input
-              type="number"
-              id="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
+        {/*  input the time of exercise with useForm*/}
+            <label className="block text-white font-bold mb-2">Time (min)</label>
+            <form.Field
+              name="time"
+              children={(field) => (
+                <input
+                  type="number"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-xl focus:outline-none bg-gray-700 text-white"
+                />
+              )}
             />
           </div>
         </div>
+
         <div className="mb-4 flex space-x-4">
           <div className="flex-1">
-            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Sets</label>
-            <input
-              type="number"
-              id="sets"
-              value={sets}
-              onChange={(e) => setSets(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
+        {/*  input the Sets of exercise with useForm*/}
+            <label className="block text-white font-bold mb-2">Sets</label>
+            <form.Field
+              name="sets"
+              children={(field) => (
+                <input
+                  type="number"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-xl focus:outline-none bg-gray-700 text-white"
+                />
+              )}
             />
           </div>
           <div className="flex-1">
-            <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Reps</label>
-            <input
-              type="number"
-              id="reps"
-              value={reps}
-              onChange={(e) => setReps(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
+        {/*  input the Reps of exercise with useForm*/}
+            <label className="block text-white font-bold mb-2">Reps</label>
+            <form.Field
+              name="reps"
+              children={(field) => (
+                <input
+                  type="number"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-xl focus:outline-none bg-gray-700 text-white"
+                />
+              )}
             />
           </div>
         </div>
+
         <div className="flex">
-          <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2 mt-2">Date:</label>
-          <input
-            type="date"
-            id="date"
-            value={date || ''}
-            onChange={(e) => setDate(e.target.value)} // Update the date value here
-            className="mx-5 px-4 py-2 dark:bg-gray-700 border rounded-md"
+        {/*  input the date of exercise with useForm*/}
+
+          <label className="block text-white font-bold mb-2 mt-2">Date:</label>
+          <form.Field
+            name="date"
+            children={(field) => (
+              <input
+                type="date"
+                value={field.state.value || ''}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="mx-5 px-4 py-2 bg-gray-700 border rounded-md"
+              />
+            )}
           />
         </div>
-        <button type="submit" className="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:bg-tertiary transition-colors">
-          Add Exercise
-        </button>
+            {/* submit the form  */}
+        <div className='flex justify-center'>
+          <button 
+            type="submit" 
+            disabled={addExerciseMutation.isPending}
+            className="bg-gray-800 text-white font-bold py-2 px-4 rounded-full hover:bg-slate-900"
+          >
+            {/* if exericse is adding show  'Adding...' else show 'Add Exercise' */}
+            {addExerciseMutation.isPending ? 'Adding...' : 'Add Exercise'}
+          </button> 
+        </div>
       </form>
     </div>
   );

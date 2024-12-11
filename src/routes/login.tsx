@@ -11,30 +11,37 @@ function LoginComponent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const chgeUrl = useNavigate();
+  // after login go to index
   const goToIndex = () => {
     chgeUrl("/")
   }
-  
+  // after submit test if the email and psw field empty or no
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
-
-
     if (!email || !password) {
       alert('All fields are required');
       return;
     }
-    
+    // call login function to login for specified user
+    await login()
+  }
+
+  const login = async () => {
     try {
+      // call the api to login
       const response = await axios.post('http://localhost:5000/api/login', {
         email,
         password,
       })
+      // if api is successful save userId and fullName in localStorage
       if (response.status === 200) {
         const { userId, message } = response.data
         localStorage.setItem('userId', userId)
         localStorage.setItem('fullName', response.data.fullname)
+        // show that is sign in succ
         alert(message)
       } else {
+        // show there a problem
         alert(response.data.message)
       }
     } catch (error) {
@@ -42,18 +49,39 @@ function LoginComponent() {
       alert('Failed to log in')
     }
   }
-
+//! i try using tanstack query but it's fail i will  try this later
+//   const login = useMutation({
+//     mutationFn: async (email: string, password: string) => {
+//     try {
+//       const response = await axios.post('http://localhost:5000/api/login', {
+//         email,
+//         password,
+//       })
+      
+//     } catch (error) {
+//       console.error('Error:', error)
+//       alert('Failed to log in')
+//     }
+//   },
+//   onSuccess: (data) => {
+//     localStorage.setItem('userId', data.userId);
+//     localStorage.setItem('fullName', data.fullname);
+//     navigate('/');
+//   }
+// })
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+      <h1 className="text-3xl font-bold mb-6 text-white ">
         Login
       </h1>
+      {/* start form  i useState because there just two field*/}
       <form
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6"
+        className=" bg-gray-900 shadow-md rounded-lg p-6"
       >
+        {/* email field */}
         <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+          <label className="block text-white font-bold">
             Email
           </label>
           <input
@@ -61,12 +89,13 @@ function LoginComponent() {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border rounded-lg bg-gray-700 text-white"
             required
           />
         </div>
+        {/* psw field */}
         <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 font-bold mb-2">
+          <label className="block text-white font-bold ">
             Password
           </label>
           <input
@@ -74,29 +103,32 @@ function LoginComponent() {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-white"
+            className="w-full px-3 py-2 border rounded-lg bg-gray-700 text-white"
             required
           />
         </div>
-        <div className="text-center mt-4">
+        {/* sign up if you do'nt have account */}
+        <div className="text-center my-4">
             <p className="text-sm text-gray">
-              Don&apos;t have an account?{' '}
-              <a
+              Don't have an account?{' '}
+              <Link
                 href="/register"
                 className="text-white"
               >
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
-
+        {/* submit  go to index and save the user  */}
+        <div className='flex justify-center'>
         <button
           type="submit"
           onClick={goToIndex}
-          className="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:bg-tertiary transition-colors"
+          className="bg-gray-800 text-white font-bold py-2 px-4 rounded-full hover:bg-slate-900"
         >
           Login
         </button>
+        </div>
       </form>
     </div>
   )

@@ -8,7 +8,7 @@ export const Route = createRootRoute({
 })
 
 function Header() {
-  const userId = localStorage.getItem('userId'); 
+    const userId = localStorage.getItem('userId'); 
 
   useEffect(() => {
     const userId = localStorage.getItem('userId'); 
@@ -18,21 +18,21 @@ function Header() {
     localStorage.clear();
     navigate('/login');  }
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md">
+    <header className="bg-gray-800 shadow-xl">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold">
-          <span className="text-primary dark:text-primary">My</span>
-          <span className="text-secondary dark:text-secondary">Fitness</span>
+          <span className="text-da">My</span>
+          <span className="text-white">Fitness</span>
         </Link>
         <nav className="flex items-center space-x-4">
           <ul className="flex space-x-4">
-            <li><Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Home</Link></li>
-            <li><Link href="/exercise" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Exercise</Link></li>
+            <li><Link href="/" className="text-white">Home</Link></li>
+            <li><Link href="/exercise" className="text-white">Exercise</Link></li>
             {userId ? (
-            <li><Link href="/login" onClick={logout} className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">logout</Link></li>
+            <li><Link href="/login" onClick={logout} className="text-white">logout</Link></li>
             )
             :(
-            <li><Link href="/login" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-primary">Login</Link></li>
+            <li><Link href="/login" className="text-white">Login</Link></li>
 )
             }
             

@@ -5,29 +5,31 @@ interface DailyExercisesProps {
   date: string
   exercises: Exercise[]
 }
-
+// get the data from index.tsx and show it like mini popup
 function DailyExercises({ date, exercises }: DailyExercisesProps) {
+  // if is open show all the detail of exercise
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div className="mb-4">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-md transition-shadow"
+        className="w-full text-left bg-gray-900 p-5 rounded-xl "
       >
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{date}</h2>
+        <h2 className="text-xl font-bold text-white">{date}</h2>
       </button>
+      {/* show the detail of exercise */}
       {isOpen && (
-        <div className="mt-2 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+        <div className="mt-2 bg-gray-700 p-4 rounded-lg">
           {exercises.map((exercise) => (
             <div key={exercise.id} className="mb-2 last:mb-0">
-              <h3 className="font-medium text-gray-800 dark:text-white">{exercise.title}</h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <h3 className="font-semibold text-white">{exercise.title}</h3>
+              <p className="text-white">
                 {exercise.category}
-                {exercise.weight > 0 && ` - ${exercise.weight}kg`}
+                {exercise.weight > 0 && ` - ${exercise.weight}kg`} 
                 {exercise.time > 0 && ` - ${exercise.time} minutes`}
               </p>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-white">
                 {exercise.sets > 0 && exercise.reps > 0 ? `${exercise.sets} sets x ${exercise.reps} reps` : 'No sets/reps specified'}
               </p>
             </div>
