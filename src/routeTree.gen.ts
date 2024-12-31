@@ -147,34 +147,3 @@ export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/exercise",
-        "/home",
-        "/login",
-        "/register"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/exercise": {
-      "filePath": "exercise.tsx"
-    },
-    "/home": {
-      "filePath": "home.tsx"
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/register": {
-      "filePath": "register.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
