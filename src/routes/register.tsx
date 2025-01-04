@@ -1,51 +1,64 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import { createFileRoute,Link,useNavigate } from '@tanstack/react-router'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import React, { useState } from "react";
+import axios from "axios";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const Route = createFileRoute('/register')({
+export const Route = createFileRoute("/register")({
   component: RegisterComponent,
-})
+});
 
 function RegisterComponent() {
-  const [fullname, setFullname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const chgeUrl = useNavigate(); 
-  const navigator = useNavigate();
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const chgeUrl = useNavigate();
   // after create user should go to login first
   const goToLogin = () => {
-    chgeUrl("/login")
+    chgeUrl("/login");
+  };
 
-  }
+  // register new user
+  const registerMutation = useMutation({
+    mutationFn: async (userData: {
+      fullname: string;
+      email: string;
+      password: string;
+    }) => {
+      const response = await axios.post(
+        "http://localhost:5000/api/register",
+        userData,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      alert("User Created");
+      goToLogin();
+    },
+    onError: (error) => {
+      console.error("Error:", error);
+      alert("Failed to register");
+    },
+  });
+
   // after submit check if user field is empty or no
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     if (!fullname || !email || !password) {
-      alert('All fields are required');
+      alert("All fields are required");
       return;
     }
     // call api that create user in DB
-    try {
-      const response = await axios.post('http://localhost:5000/api/register', {
-        fullname,
-        email,
-        password,
-      });
-      // show 
-      alert("user Created")
-      goToLogin()
-    } catch (error) { // if there any error show it in console and show that the creation of user faild
-      console.error('Error:', error);
-      
-        alert('Failed to register');
-    }
+    registerMutation.mutate({ fullname, email, password });
+    goToLogin();
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-white">Register</h1>
       {/* start form */}
-      <form onSubmit={handleSubmit} className="bg-gray-900 shadow-md rounded-lg p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-900 shadow-md rounded-lg p-6"
+      >
         <div className="mb-4">
           {/* fullname field */}
           <label className="block text-white font-bold mb-2">Full Name</label>
@@ -58,7 +71,7 @@ function RegisterComponent() {
             required
           />
         </div>
-          {/* email field */}
+        {/* email field */}
         <div className="mb-4">
           <label className="block text-white font-bold mb-2">Email</label>
           <input
@@ -70,7 +83,7 @@ function RegisterComponent() {
             required
           />
         </div>
-          {/* psw field */}
+        {/* psw field */}
         <div className="mb-4">
           <label className="block text-white font-bold mb-2">Password</label>
           <input
@@ -84,23 +97,22 @@ function RegisterComponent() {
           {/* if have an account login */}
           <div className="text-center mt-4">
             <p className="text-sm text-white">
-              have an account?{' '}
-              <Link
-                href="/login"
-                className="text-white"
-              >
+              have an account?{" "}
+              <Link href="/login" className="text-white">
                 login
               </Link>
             </p>
           </div>
         </div>
         {/* submit the form */}
-        <div className='flex justify-center'>
-        <button onClick={goToLogin} 
-        type="submit" 
-        className="bg-gray-800 text-white font-bold py-2 px-4 rounded-full hover:bg-slate-900">
+        <div className="flex justify-center">
+          <button
+            onClick={goToLogin}
+            type="submit"
+            className="bg-gray-800 text-white font-bold py-2 px-4 rounded-full hover:bg-slate-900"
+          >
             Register
-        </button>
+          </button>
         </div>
       </form>
     </div>

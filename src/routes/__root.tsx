@@ -1,15 +1,14 @@
-import * as React from 'react'
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import Header from '../components/Header'
+import * as React from "react";
+import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import Header from "../components/Header";
 
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
   component: RootComponent,
-})
+});
 
 function RootComponent() {
   return (
@@ -43,10 +42,10 @@ function RootComponent() {
       </div>
       <hr /> */}
       <QueryClientProvider client={queryClient}>
-        <Header/>
+        <Header />
         <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
+        <TanStackRouterDevtools position="bottom-right" />
       </QueryClientProvider>
     </>
-  )
+  );
 }

@@ -4,12 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#164266',
-        secondary: '#f1c40f',
-        danger: '#e74c3c',
+        primary: "#164266",
+        secondary: "#f1c40f",
+        danger: "#e74c3c",
       },
     },
   },
   plugins: [],
-}
-
+};

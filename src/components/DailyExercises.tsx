@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import { Exercise } from '../models/exercise'
+import React, { useState } from "react";
+import { Exercise } from "../models/exercise";
 
 interface DailyExercisesProps {
-  date: string
-  exercises: Exercise[]
+  date: string;
+  exercises: Exercise[];
 }
 // get the data from index.tsx and show it like mini popup
 function DailyExercises({ date, exercises }: DailyExercisesProps) {
   // if is open show all the detail of exercise
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="mb-4">
@@ -26,18 +26,20 @@ function DailyExercises({ date, exercises }: DailyExercisesProps) {
               <h3 className="font-semibold text-white">{exercise.title}</h3>
               <p className="text-white">
                 {exercise.category}
-                {exercise.weight > 0 && ` - ${exercise.weight}kg`} 
+                {exercise.weight > 0 && ` - ${exercise.weight}kg`}
                 {exercise.time > 0 && ` - ${exercise.time} minutes`}
               </p>
               <p className="text-white">
-                {exercise.sets > 0 && exercise.reps > 0 ? `${exercise.sets} sets x ${exercise.reps} reps` : 'No sets/reps specified'}
+                {exercise.sets > 0 && exercise.reps > 0
+                  ? `${exercise.sets} sets x ${exercise.reps} reps`
+                  : "No sets/reps specified"}
               </p>
             </div>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default DailyExercises
+export default DailyExercises;

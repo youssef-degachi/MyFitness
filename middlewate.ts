@@ -1,4 +1,4 @@
-import { authMiddleware } from '@clerk/clerk-react';
+import { authMiddleware } from "@clerk/clerk-react";
 
 export default authMiddleware({
   publicRoutes: ["/", "/login"],
@@ -7,4 +7,3 @@ export default authMiddleware({
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
-

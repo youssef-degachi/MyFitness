@@ -1,6 +1,6 @@
-import User from '../models/user.js';
+import User from "../models/user.js";
 
-// create a new user 
+// create a new user
 // @param fullname, email, password
 // @result create a new user
 // Post request
@@ -20,10 +20,10 @@ const registerUser = async (req, res) => {
   res.status(201).json({ message: "User registered successfully", user });
 };
 
-// Login user 
+// Login user
 // @param email, password
 // @result return email and password
-// post or get request => I use post for send the body 
+// post or get request => I use post for send the body
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -32,8 +32,14 @@ const loginUser = async (req, res) => {
   if (!user || user.password !== password) {
     return res.status(400).json({ message: "Invalid email or password." });
   }
-  // return userId and fullname 
-  res.status(200).json({ message: "Login successful", userId: user._id,  fullname: user.fullname  });
+  // return userId and fullname
+  res
+    .status(200)
+    .json({
+      message: "Login successful",
+      userId: user._id,
+      fullname: user.fullname,
+    });
 };
 
 //logout function is don't have any specific functionality yet
@@ -42,7 +48,7 @@ const logoutUser = (req, res) => {
   res.status(200).json({ message: "User logged out successfully." });
 };
 
-// get all user to check what i have 
+// get all user to check what i have
 // get request
 const GetAllUsers = async (req, res) => {
   try {
@@ -50,7 +56,9 @@ const GetAllUsers = async (req, res) => {
     const users = await User.find();
 
     // show all user
-    res.status(200).json({ message: "All users retrieved successfully", users });
+    res
+      .status(200)
+      .json({ message: "All users retrieved successfully", users });
   } catch (error) {
     // Handle any errors
     console.error(error);
