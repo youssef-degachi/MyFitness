@@ -128,6 +128,7 @@ export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>();
 
+<<<<<<< HEAD
 /* ROUTE_MANIFEST_START
 {
   "routes": {
@@ -155,3 +156,5 @@ export const routeTree = rootRoute
   }
 }
 ROUTE_MANIFEST_END */
+=======
+>>>>>>> refs/remotes/origin/main
