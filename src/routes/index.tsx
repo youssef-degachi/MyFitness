@@ -1,5 +1,3 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import DailyExercises from "../components/DailyExercises";
 import { Exercise } from "../models/exercise";
