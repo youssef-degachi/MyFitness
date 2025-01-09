@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
-// import { Link } from '@tanstack/react-router'
+import { useEffect } from "react";
 import {
   Link,
-  Outlet,
   createRootRoute,
   useNavigate,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 export const Route = createRootRoute({
   component: Header,
